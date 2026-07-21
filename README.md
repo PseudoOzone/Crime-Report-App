@@ -1,93 +1,112 @@
-# Crime-Report-App
+# Crime Report API — Incomplete Backend Prototype
 
-## Secure & Intuitive Citizen Crime Reporting
+An early Node.js and MongoDB backend experiment for user registration and location-based incident-report records.
 
-This repository contains the source code for a JavaScript-powered crime reporting application designed to provide citizens with a secure and intuitive platform to report incidents to local authorities. The application aims to enhance community safety by facilitating quick, accurate, and efficient dissemination of crime information.
+> **Status:** incomplete educational prototype. The current branch does not implement the full citizen-reporting platform described in older documentation, and the server may not start until the missing report-route module is restored or implemented.
 
-By streamlining the reporting process, this app empowers individuals to actively contribute to public safety and helps law enforcement gather vital data more effectively.
+## Implemented components
 
-## ✨ Features
+- Express server setup
+- MongoDB connection through Mongoose
+- User and incident-report schemas
+- Password hashing with bcrypt
+- JWT creation during signup
+- Environment-variable based configuration
 
-* **Comprehensive Incident Reporting:**
-    * **Incident Type Selection:** Categorized options for various incidents (e.g., theft, vandalism, assault, suspicious activity).
-    * **Precise Location Pinpointing:** Integrated geolocation services for accurate scene identification, with manual address input fallback.
-    * **Date and Time Stamping:** Automatic and manual input for precise incident timestamps.
-    * **Detailed Description Field:** A rich text area for users to provide a comprehensive narrative of the event.
-    * **Media Upload:** Ability to attach photos and videos as supporting evidence (e.g., images of damage, suspects, or relevant footage).
-    * **Anonymity Option:** Users can choose to submit reports anonymously to protect their identity.
+## Current structure
 
-* **User Authentication & Management:**
-    * **Secure User Accounts:** Registered users can create and manage accounts.
-    * **Guest Reporting:** Option to report incidents without requiring full registration for immediate submissions.
-    * **Personal Dashboard:** Registered users can view a history of their submitted reports.
-    * **Report Status Tracking:** Real-time updates on report processing (e.g., "Submitted," "Under Review," "Assigned," "Closed").
+```text
+Crime-Report-App/
+├── backend/
+│   ├── index.js
+│   ├── models/
+│   │   ├── User.js
+│   │   └── Report.js
+│   ├── routes/
+│   │   └── authRoutes.js
+│   └── package.json
+└── README.md
+```
 
-* **Responsive Design:** Optimized for a seamless and accessible experience across all devices, including desktops, tablets, and mobile phones.
+The server entry point imports `./routes/reportRoutes`, but that module is not present on the current branch. Implement it or remove the import before expecting the backend to run.
 
-## 🚀 Technologies Used
+## Not currently implemented
 
-* **Frontend:**
-    * HTML5
-    * CSS3 (Tailwind CSS for utility-first styling)
-    * JavaScript (ES6+)
-    * (Potentially React.js or a similar framework for component-based architecture)
+The present code does not establish:
 
-* **Backend & Database:**
-    * (Placeholder: This section would detail your chosen backend technology, e.g., Node.js with Express, Python with Flask/Django, etc.)
-    * (Placeholder: This section would detail your chosen database, e.g., Firebase Firestore, MongoDB, PostgreSQL, etc.)
+- login
+- authenticated report submission
+- report listing or status tracking
+- authority dashboards
+- anonymous reporting
+- media uploads
+- geolocation services
+- role-based access control
+- a frontend application
+- production deployment controls
 
-## 🏁 Getting Started
+These should not be advertised as completed features.
 
-To get a local copy up and running, follow these simple steps.
+## Setup after restoring the missing route
 
-### Prerequisites
+```bash
+git clone https://github.com/PseudoOzone/Crime-Report-App.git
+cd Crime-Report-App/backend
+npm install
+```
 
-* Node.js (if using a Node.js backend)
-* npm or yarn
+Create a local `.env` file that is not committed:
 
-### Installation
+```bash
+MONGO_URI=mongodb://127.0.0.1:27017/crime_report
+JWT_SECRET=replace-with-a-long-random-secret
+PORT=5000
+```
 
-1.  **Clone the repo:**
-    ```bash
-    git clone [https://github.com/PseudoOzone/Crime-Report-App.git](https://github.com/PseudoOzone/Crime-Report-App.git)
-    cd Crime-Report-App
-    ```
+Run the server using the script defined in `backend/package.json`.
 
-2.  **Install NPM packages:**
-    ```bash
-    npm install
-    # or
-    yarn install
-    ```
+## API currently present
 
-3.  **Configure Environment Variables:**
-    * Create a `.env` file in the root directory.
-    * Add necessary API keys or configuration settings (e.g., for geolocation services, Firebase, etc.)
-        ```
-        # Example for Firebase:
-        REACT_APP_FIREBASE_API_KEY=your_api_key
-        REACT_APP_FIREBASE_AUTH_DOMAIN=your_auth_domain
-        # ... other Firebase config ...
-        ```
+### `POST /api/auth/signup`
 
-4.  **Run the application:**
-    ```bash
-    npm start
-    # or
-    yarn start
-    ```
-    This will typically open the app in your browser at `http://localhost:3000`.
+```json
+{
+  "name": "Example User",
+  "email": "user@example.com",
+  "password": "replace-me"
+}
+```
 
-## 🤝 Contributing
+The endpoint hashes the password, stores the user, and returns a one-hour JWT. Input validation and abuse controls are not yet implemented.
 
-Contributions are what make the open-source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+## Security review notes
 
-If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
+- A `.env` file appears in repository history. Any real credentials that were committed should be rotated; deleting the current file does not remove secrets from prior commits.
+- CORS is unrestricted.
+- Signup does not validate email format, password strength, field length, or unexpected input.
+- There is no login route, token-verification middleware, authorization, rate limiting, or account lockout.
+- `JWT_SECRET` is used without an explicit startup check.
+- Database connection failure is logged, but the server can continue starting in an unusable state.
+- Report fields have minimal schema validation.
+- The missing `reportRoutes` import prevents a clean startup.
+- There are no automated tests or CI checks.
 
-1.  Fork the Project
-2.  Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3.  Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4.  Push to the Branch (`git push origin feature/AmazingFeature`)
-5.  Open a Pull Request
+## Recommended next steps
 
+1. Restore or implement `backend/routes/reportRoutes.js`.
+2. Add strict request validation.
+3. Add login, authentication middleware, ownership checks, and role-based authorization.
+4. Restrict CORS to configured origins.
+5. Add rate limiting and standardized error handling.
+6. Validate required environment variables before startup.
+7. Add database indexes and schema constraints.
+8. Add API tests with an isolated test database.
+9. Rotate historical credentials and rewrite Git history when required.
 
+## Responsible-use note
+
+A real incident-reporting system would handle highly sensitive personal, location, and allegation data. It requires legal review, evidence-retention policies, abuse prevention, secure media handling, access controls, and auditability.
+
+## License
+
+Educational and portfolio use only unless a separate license file states otherwise.

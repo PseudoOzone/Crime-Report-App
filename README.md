@@ -1,8 +1,8 @@
-# Crime Report API — Incomplete Backend Prototype
+# Crime Report API — Archived Educational Prototype
 
 An early Node.js and MongoDB backend experiment for user registration and location-based incident-report records.
 
-> **Status:** incomplete educational prototype. The current branch does not implement the full citizen-reporting platform described in older documentation, and the server may not start until the missing report-route module is restored or implemented.
+> **Status:** incomplete educational prototype. The current branch does not implement the full citizen-reporting platform described in older notes and should not be deployed or used with real personal, location, allegation, or incident data.
 
 ## Implemented components
 
@@ -13,99 +13,49 @@ An early Node.js and MongoDB backend experiment for user registration and locati
 - JWT creation during signup
 - Environment-variable based configuration
 
-## Current structure
+## Current limitations
 
-```text
-Crime-Report-App/
-├── backend/
-│   ├── index.js
-│   ├── models/
-│   │   ├── User.js
-│   │   └── Report.js
-│   ├── routes/
-│   │   └── authRoutes.js
-│   └── package.json
-└── README.md
-```
+The current code does not establish a complete or production-ready system. Missing or incomplete areas include:
 
-The server entry point imports `./routes/reportRoutes`, but that module is not present on the current branch. Implement it or remove the import before expecting the backend to run.
-
-## Not currently implemented
-
-The present code does not establish:
-
-- login
+- login and token-verification middleware
 - authenticated report submission
-- report listing or status tracking
-- authority dashboards
-- anonymous reporting
-- media uploads
-- geolocation services
-- role-based access control
-- a frontend application
-- production deployment controls
+- report listing and status tracking
+- role-based authorization
+- strict request validation
+- rate limiting and abuse controls
+- a complete frontend
+- automated tests and CI
+- production privacy, retention, and audit controls
 
-These should not be advertised as completed features.
+These features must not be advertised as completed.
 
-## Setup after restoring the missing route
+## Local configuration
+
+Copy the safe template and use local development credentials:
 
 ```bash
-git clone https://github.com/PseudoOzone/Crime-Report-App.git
-cd Crime-Report-App/backend
-npm install
+cp backend/.env.example backend/.env
 ```
 
-Create a local `.env` file that is not committed:
+Example values:
 
-```bash
+```env
 MONGO_URI=mongodb://127.0.0.1:27017/crime_report
 JWT_SECRET=replace-with-a-long-random-secret
 PORT=5000
 ```
 
-Run the server using the script defined in `backend/package.json`.
+Never commit the resulting `.env` file.
 
-## API currently present
+## Security notice
 
-### `POST /api/auth/signup`
+A credentials file and a hard-coded administrator seed existed in an earlier revision. They have been removed from the current branch, and environment files are now ignored. Any database credential or signing secret that appeared in Git history must still be treated as compromised and rotated; deleting the current file does not invalidate previously exposed credentials or remove them from historical commits.
 
-```json
-{
-  "name": "Example User",
-  "email": "user@example.com",
-  "password": "replace-me"
-}
-```
+Additional issues still requiring work include unrestricted CORS, incomplete input validation, missing authentication middleware, weak startup validation, and absent abuse controls.
 
-The endpoint hashes the password, stores the user, and returns a one-hour JWT. Input validation and abuse controls are not yet implemented.
+## Appropriate use
 
-## Security review notes
-
-- A `.env` file appears in repository history. Any real credentials that were committed should be rotated; deleting the current file does not remove secrets from prior commits.
-- CORS is unrestricted.
-- Signup does not validate email format, password strength, field length, or unexpected input.
-- There is no login route, token-verification middleware, authorization, rate limiting, or account lockout.
-- `JWT_SECRET` is used without an explicit startup check.
-- Database connection failure is logged, but the server can continue starting in an unusable state.
-- Report fields have minimal schema validation.
-- The missing `reportRoutes` import prevents a clean startup.
-- There are no automated tests or CI checks.
-
-## Recommended next steps
-
-1. Restore or implement `backend/routes/reportRoutes.js`.
-2. Add strict request validation.
-3. Add login, authentication middleware, ownership checks, and role-based authorization.
-4. Restrict CORS to configured origins.
-5. Add rate limiting and standardized error handling.
-6. Validate required environment variables before startup.
-7. Add database indexes and schema constraints.
-8. Add API tests with an isolated test database.
-9. Rotate historical credentials and rewrite Git history when required.
-
-## Responsible-use note
-
-A real incident-reporting system would handle highly sensitive personal, location, and allegation data. It requires legal review, evidence-retention policies, abuse prevention, secure media handling, access controls, and auditability.
+This repository is suitable only for reviewing an early learning prototype. A real incident-reporting system would require legal review, evidence-retention policies, secure media handling, strict access controls, auditability, abuse prevention, and tested operational procedures.
 
 ## License
 
